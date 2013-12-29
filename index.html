@@ -1,5 +1,7 @@
 <html>
 <head>
+    <title>Speech quality demonstrator</script>
+
     <script src="http://code.jquery.com/jquery-2.0.3.js"></script>
     <script type="text/javascript">
         /*
@@ -19,7 +21,7 @@
             lastElement.parentNode.className = "active";
             lastElement.src = "images/speaker_playing.gif";
             //Set description pane
-            $('#details')[0].innerHTML = element.nextElementSibling.innerHTML;
+            $('#descriptionPane')[0].innerHTML = element.nextElementSibling.innerHTML;
 
             audio.src = audioFile;
             audio.play();
@@ -31,6 +33,16 @@
             }
         }
     </script>
+    <script type="text/javascript">
+	//Function block of helper methods.
+
+	function relayClickToChilds(element) {    
+	    for (var i in element.childNodes)        
+		if (typeof element.childNodes[i].click === 'function')            
+		    element.childNodes[i].click();
+	}
+    </script>
+
     <style>
         img {
             height: 3em;
@@ -73,7 +85,7 @@
     </style>
 </head>
 <body>
-    <h1>Speech QUalIty Demonstrator</h1>
+    <h1>Speech QualiIty Demonstrator</h1>
     <audio id="audio" onended="onEndedStimuli()"></audio>
 
     <div class="mainPane">
@@ -87,63 +99,58 @@
                     <th>Codec 4</th>
                 </tr>
                 <tr>
-                    <td>Sprache (männlich)</td>
+                    <td>Speech</td>
                     <td>
                         <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio1.wav" />
                         <div hidden="hidden">
-                            Beschreibung für Stimuli 1
+			    Description speech 1
                         </div>
                     </td>
                     <td>
                         <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
                         <div hidden="hidden">
-                            Beschreibung für Stimuli 2
+                            Description speech 2
                         </div>
                     </td>
                     <td>
                         <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
                         <div hidden="hidden">
-                            Beschreibung für Stimuli 3
+                            Description speech 3
                         </div>
                     </td>
                     <td>
                         <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
                         <div hidden="hidden">
-                            Beschreibung für Stimuli 4
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <td>Musik</td>
+                    <td>Music</td>
                     <td>
                         <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio1.wav" />
                         <div hidden="hidden">
-                            Beschreibung für Stimuli 1
                         </div>
                     </td>
                     <td>
                         <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
                         <div hidden="hidden">
-                            Beschreibung für Stimuli 2
                         </div>
                     </td>
                     <td>
                         <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
                         <div hidden="hidden">
-                            Beschreibung für Stimuli 3
                         </div>
                     </td>
                     <td>
                         <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
                         <div hidden="hidden">
-                            Beschreibung für Stimuli 4
                         </div>
                     </td>
                 </tr>
             </table>
         </div>
         <div class="right">
-            <div id="details" />
+            <div id="descriptionPane" />
         </div>
     </div>
 </body>
