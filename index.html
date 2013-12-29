@@ -1,15 +1,23 @@
 <html>
 <head>
-    <title>Speech quality demonstrator</script>
+    <title>Speech quality demonstrator</title>
 
     <script src="http://code.jquery.com/jquery-2.0.3.js"></script>
     <script type="text/javascript">
+	/* Cycle:
+	1. Loading
+	2. Playing
+	3. (Stalling)
+	4. Finished OR Error
+	*/
+
         /*
         Play the current selected sample.
         Element must contain "alt" and nextElementSibling is used as description.
         */
         var lastElement = null;
         function playStimuli(element) {
+	    console.log("playStimuli(): " + element.alt);
             var audioElement = document.getElementById('audio');
             var audioFile = element.alt;
 
@@ -17,21 +25,32 @@
             if (!audio.paused) {
                 audio.pause();
             }
+
             lastElement = element;
             lastElement.parentNode.className = "active";
             lastElement.src = "images/speaker_playing.gif";
-            //Set description pane
+
+            //Set content to description pane
             $('#descriptionPane')[0].innerHTML = element.nextElementSibling.innerHTML;
 
             audio.src = audioFile;
             audio.play();
         }
-        function onEndedStimuli() {
+
+	//Stimuli playback callbacks.
+        function onStimuliEnded() {
+	    console.log("Stimuli playback finished");
             if (lastElement != null) {
                 lastElement.parentNode.className = "";
                 lastElement.src = "images/speaker.png";
             }
         }
+	function onStimuliStalling() {
+	    console.log("Stalling");
+	}
+	function onStimuliError(reason) {
+	    console.log("Stimuli playback error: " + reason);
+	}
     </script>
     <script type="text/javascript">
 	//Function block of helper methods.
@@ -85,8 +104,8 @@
     </style>
 </head>
 <body>
-    <h1>Speech QualiIty Demonstrator</h1>
-    <audio id="audio" onended="onEndedStimuli()"></audio>
+    <h1>Speech Quality Demonstrator</h1>
+    <audio id="audio" onended="onStimuliEnded" onstalling="onStimuliStalling" onerror="onStimuliError"></audio>
 
     <div class="mainPane">
         <div class="left">
