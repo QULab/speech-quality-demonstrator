@@ -1,0 +1,150 @@
+<html>
+<head>
+    <script src="http://code.jquery.com/jquery-2.0.3.js"></script>
+    <script type="text/javascript">
+        /*
+        Play the current selected sample.
+        Element must contain "alt" and nextElementSibling is used as description.
+        */
+        var lastElement = null;
+        function playStimuli(element) {
+            var audioElement = document.getElementById('audio');
+            var audioFile = element.alt;
+
+            onEndedStimuli();
+            if (!audio.paused) {
+                audio.pause();
+            }
+            lastElement = element;
+            lastElement.parentNode.className = "active";
+            lastElement.src = "images/speaker_playing.gif";
+            //Set description pane
+            $('#details')[0].innerHTML = element.nextElementSibling.innerHTML;
+
+            audio.src = audioFile;
+            audio.play();
+        }
+        function onEndedStimuli() {
+            if (lastElement != null) {
+                lastElement.parentNode.className = "";
+                lastElement.src = "images/speaker.png";
+            }
+        }
+    </script>
+    <style>
+        img {
+            height: 3em;
+            width: 3em;
+        }
+
+        .mainPane {
+            height: 90%;
+            width: 100%;
+            background-color: #ffd800;
+        }
+
+            .mainPane .left {
+                float: left;
+                width: 80%;
+                height: 100%;
+                background-color: gray;
+            }
+
+            .mainPane .right {
+                float: right;
+                width: 20%;
+                height: 100%;
+                background-color: lightgrey;
+            }
+
+            .mainPane .left .table {
+                width: 100%;
+                background-color: aqua;
+                float: left;
+            }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        .active {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Speech QUalIty Demonstrator</h1>
+    <audio id="audio" onended="onEndedStimuli()"></audio>
+
+    <div class="mainPane">
+        <div class="left">
+            <table class="table">
+                <tr>
+                    <th>Stimuli</th>
+                    <th>Codec 1</th>
+                    <th>Codec 2</th>
+                    <th>Codec 3</th>
+                    <th>Codec 4</th>
+                </tr>
+                <tr>
+                    <td>Sprache (männlich)</td>
+                    <td>
+                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio1.wav" />
+                        <div hidden="hidden">
+                            Beschreibung für Stimuli 1
+                        </div>
+                    </td>
+                    <td>
+                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
+                        <div hidden="hidden">
+                            Beschreibung für Stimuli 2
+                        </div>
+                    </td>
+                    <td>
+                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
+                        <div hidden="hidden">
+                            Beschreibung für Stimuli 3
+                        </div>
+                    </td>
+                    <td>
+                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
+                        <div hidden="hidden">
+                            Beschreibung für Stimuli 4
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Musik</td>
+                    <td>
+                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio1.wav" />
+                        <div hidden="hidden">
+                            Beschreibung für Stimuli 1
+                        </div>
+                    </td>
+                    <td>
+                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
+                        <div hidden="hidden">
+                            Beschreibung für Stimuli 2
+                        </div>
+                    </td>
+                    <td>
+                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
+                        <div hidden="hidden">
+                            Beschreibung für Stimuli 3
+                        </div>
+                    </td>
+                    <td>
+                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
+                        <div hidden="hidden">
+                            Beschreibung für Stimuli 4
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="right">
+            <div id="details" />
+        </div>
+    </div>
+</body>
+</html>
