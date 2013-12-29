@@ -1,10 +1,15 @@
 <html>
 <head>
     <title>Speech quality demonstrator</title>
-
     <script src="http://code.jquery.com/jquery-2.0.3.js"></script>
+
     <script type="text/javascript">
+    </script>
+
+    <script type="text/javascript">
+
 	/* Cycle:
+	0. Stimuli ended
 	1. Loading
 	2. Playing
 	3. (Stalling)
@@ -17,13 +22,17 @@
         */
         var lastElement = null;
         function playStimuli(element) {
-	    console.log("playStimuli(): " + element.alt);
-            var audioElement = document.getElementById('audio');
+	        console.log("playStimuli(): " + element.alt);
+            var audioElement = document.getElementById('audio'); //$('#audio')[0]
             var audioFile = element.alt;
 
-            onEndedStimuli();
+            onStimuliEnded();
             if (!audio.paused) {
                 audio.pause();
+		        if (lastElement === element) {
+		            $('#descriptionPane')[0].innerHTML = "";
+		            return;
+		        }
             }
 
             lastElement = element;
@@ -35,21 +44,44 @@
 
             audio.src = audioFile;
             audio.play();
+           $('#progressBarWaiting')[0].hidden = "hidden";
+           $('#progressBarPlaying')[0].hidden = "";
         }
 
-	//Stimuli playback callbacks.
-        function onStimuliEnded() {
-	    console.log("Stimuli playback finished");
-            if (lastElement != null) {
-                lastElement.parentNode.className = "";
-                lastElement.src = "images/speaker.png";
-            }
-        }
+	function onStimuliPlaying() {
+	    console.log("Playing");
+	}
+
+	function onStimuliTimeUpdate(audio) {
+        console.log("Time update " + audio.currentTime + " / " + audio.duration);
+        if (!isNaN(audio.duration))
+            $('#progressBarPlaying')[0].value = (audio.currentTime / audio.duration);
+	}
+	
+	function onStimuliProgress(e) { //How much loaded?
+        console.log("Progress");
+	}
+
 	function onStimuliStalling() {
 	    console.log("Stalling");
 	}
+
+	//Stimuli playback callbacks.
+    function onStimuliEnded() {
+        console.log("Stimuli playback finished");
+        if (lastElement != null) {
+            lastElement.parentNode.className = "";
+            lastElement.src = "images/speaker.png";
+            $('#progressBarWaiting')[0].hidden = "";
+            $('#progressBarPlaying')[0].hidden = "hidden";
+            $('#progressBarPlaying')[0].value = 0;
+        }
+    }
+
+
 	function onStimuliError(reason) {
 	    console.log("Stimuli playback error: " + reason);
+	    onStimuliEnded();
 	}
     </script>
     <script type="text/javascript">
@@ -57,7 +89,7 @@
 
 	function relayClickToChilds(element) {    
 	    for (var i in element.childNodes)        
-		if (typeof element.childNodes[i].click === 'function')            
+		if (typeof element.childNodes[i].click === 'function')
 		    element.childNodes[i].click();
 	}
     </script>
@@ -98,15 +130,22 @@
             border: 1px solid black;
         }
 
-        .active {
+        .selected {
+            background-color: blue;
+        }
+        
+        .playing {
             background-color: red;
+        }
+        
+        .progressBar {
+            width : 100%;
         }
     </style>
 </head>
 <body>
     <h1>Speech Quality Demonstrator</h1>
-    <audio id="audio" onended="onStimuliEnded" onstalling="onStimuliStalling" onerror="onStimuliError"></audio>
-
+    <audio id="audio" onplaying="onStimuliPlaying(this)" ontimeupdate="onStimuliTimeUpdate(this)" onstalling="onStimuliStalling(this)" onended="onStimuliEnded(this)" onerror="onStimuliError(this)"></audio>
     <div class="mainPane">
         <div class="left">
             <table class="table">
@@ -120,9 +159,9 @@
                 <tr>
                     <td>Speech</td>
                     <td>
-                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio1.wav" />
+                        <img src="images/speaker.png" onclick="playStimuli(this)" ondblClick="" alt="audio/audio1.wav" />
                         <div hidden="hidden">
-			    Description speech 1
+		                    Description speech 1
                         </div>
                     </td>
                     <td>
@@ -169,7 +208,11 @@
             </table>
         </div>
         <div class="right">
-            <div id="descriptionPane" />
+            <div id="descriptionPane"></div>
+        </div>
+        <div>
+            <progress id="progressBarWaiting" class="progressBar"></progress>
+            <progress id="progressBarPlaying" class="progressBar" hidden="hidden"></progress>
         </div>
     </div>
 </body>
