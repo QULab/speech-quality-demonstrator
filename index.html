@@ -138,10 +138,37 @@
 
             /* Dynamic styles */
             .playing {}
-            .progressBar {
-                margin: 0px auto 0px auto;
-                width: 50%;
+            
+        </style>
+        <style>
+        /*Omage to K.I.T.T.*/
+            .kittLED {
+                position:relative;
+                width:3em;
+                height:0.7em;
+
+                -webkit-animation:KITT 3s infinite; /*Safari and Chrome*/
             }
+
+                .kitt-left {
+                    width:50%;
+                    height:100%;
+                    float:right;
+                    background-image: -webkit-linear-gradient(right, #FFFFFF 0%, #FF0000 100%);
+                }
+
+                .kitt-right {
+                    width:50%;
+                    height:100%;
+                    float:right;
+                    background-image: -webkit-linear-gradient(left, #FFFFFF 0%, #FF0000 100%);
+                }
+
+                @-webkit-keyframes KITT /*Safari and Chrome*/ {
+                    0%  {left:10%;}
+                    50% {left:90%;}
+                    100% {left:10%;};
+                }
         </style>
     </head>
     <body>
@@ -210,14 +237,20 @@
                         </td>
                     </tr>
                 </table>
-                <div style="text-align:center">
-                    <progress class="progressBar" id="progressBarWaiting"></progress>
-                <!-- Replace animation -->
-                <progress class="progressBar" hidden="hidden" id="progressBarPlaying"></progress>
+                <div style="text-align:center;width:100%;margin: 0 auto 0 auto;">
+<!--                    <progress id="progressBarWaiting" class="progressBar"></progress>             -->
+                    <div style="text-align:center;width:20em;margin: 0 auto 0 auto;">
+                        <div id="progressBarWaiting" class="kittLED">
+                            <div class="kitt-left"></div>
+                            <div class="kitt-right"></div>
+                        </div>
+                    </div>
+                 
+                    <progress id="progressBarPlaying" style="width:25em;" hidden="hidden"></progress>
+                </div>
         </div>
     </div>
-</div>
-<!-- invisible audio player -->
-<audio id="audio" onended="onStimuliEnded(this)" onerror="onStimuliError(this)" onplaying="onStimuliPlaying(this)" onstalling="onStimuliStalling(this)" ontimeupdate="onStimuliTimeUpdate(this)"></audio>
+    <!-- invisible audio player -->
+    <audio id="audio" onended="onStimuliEnded(this)" onerror="onStimuliError(this)" onplaying="onStimuliPlaying(this)" onstalling="onStimuliStalling(this)" ontimeupdate="onStimuliTimeUpdate(this)"></audio>
 </body>
 </html>
