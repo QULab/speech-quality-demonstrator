@@ -1,237 +1,223 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Speech quality demonstrator</title>
-    <script src="jquery-2.0.3.js"></script>
+    <head>
+        <title>Speech quality demonstrator</title>
+        <script src="jquery-2.0.3.js"></script>
+        <script type="text/javascript">
+            /* Cycle:
+             0. Stimuli ended
+             1. Loading
+             2. Playing
+             3. (Stalling)
+             4. Finished OR Error
+             */
 
-    <script type="text/javascript">
+            /*
+             Play the current selected sample.
+             Element must contain "alt", which is the source.
+             */
+            var lastElement = null;
+            function playStimuli(element) {
+                console.log("playStimuli(): " + element.alt);
+                var audioElement = document.getElementById('audio'); //$('#audio')[0]
+                var audioFile = element.alt;
 
-	/* Cycle:
-	0. Stimuli ended
-	1. Loading
-	2. Playing
-	3. (Stalling)
-	4. Finished OR Error
-	*/
+                onStimuliEnded();
+                if (!audio.paused) {
+                    audio.pause();
+                    if (lastElement === element) {
+                        return;
+                    }
+                }
 
-        /*
-        Play the current selected sample.
-        Element must contain "alt", which is the source.
-        */
-        var lastElement = null;
-        function playStimuli(element) {
-	        console.log("playStimuli(): " + element.alt);
-            var audioElement = document.getElementById('audio'); //$('#audio')[0]
-            var audioFile = element.alt;
+                lastElement                      = element;
+                lastElement.parentNode.className = "playing";
+                lastElement.src                  = "images/speaker_playing.gif";
 
-            onStimuliEnded();
-            if (!audio.paused) {
-                audio.pause();
-		        if (lastElement === element) {
-		            return;
-		        }
+                audio.src                        = audioFile;
+                audio.play();
+                $('#progressBarWaiting')[0].hidden = "hidden";
+                $('#progressBarPlaying')[0].hidden = "";
             }
 
-            lastElement = element;
-            lastElement.parentNode.className = "playing";
-            lastElement.src = "images/speaker_playing.gif";
+            function onStimuliPlaying() {
+                console.log("Playing");
+            }
 
-            audio.src = audioFile;
-            audio.play();
-           $('#progressBarWaiting')[0].hidden = "hidden";
-           $('#progressBarPlaying')[0].hidden = "";
-        }
+            function onStimuliTimeUpdate(audio) {
+                console.log("Time update " + audio.currentTime + " / " + audio.duration);
+                if (!isNaN(audio.duration)) 
+                    $('#progressBarPlaying')[0].value = (audio.currentTime / audio.duration);
+                }
 
-	function onStimuliPlaying() {
-	    console.log("Playing");
-	}
+            function onStimuliProgress(e) { //How much loaded?
+                console.log("Progress");
+            }
 
-	function onStimuliTimeUpdate(audio) {
-        console.log("Time update " + audio.currentTime + " / " + audio.duration);
-        if (!isNaN(audio.duration))
-            $('#progressBarPlaying')[0].value = (audio.currentTime / audio.duration);
-	}
-	
-	function onStimuliProgress(e) { //How much loaded?
-        console.log("Progress");
-	}
+            function onStimuliStalling() {
+                console.log("Stalling");
+            }
 
-	function onStimuliStalling() {
-	    console.log("Stalling");
-	}
+            //Stimuli playback callbacks.
+            function onStimuliEnded() {
+                console.log("Stimuli playback finished");
+                if (lastElement != null) {
+                    lastElement.parentNode.className   = "";
+                    lastElement.src                    = "images/speaker.png";
+                    $('#progressBarWaiting')[0].hidden = "";
+                    $('#progressBarPlaying')[0].hidden = "hidden";
+                    $('#progressBarPlaying')[0].value  = 0;
+                }
+            }
 
-	//Stimuli playback callbacks.
-    function onStimuliEnded() {
-        console.log("Stimuli playback finished");
-        if (lastElement != null) {
-            lastElement.parentNode.className = "";
-            lastElement.src = "images/speaker.png";
-            $('#progressBarWaiting')[0].hidden = "";
-            $('#progressBarPlaying')[0].hidden = "hidden";
-            $('#progressBarPlaying')[0].value = 0;
-        }
-    }
+            function onStimuliError(reason) {
+                console.log("Stimuli playback error: " + reason);
+                onStimuliEnded();
+            }
+        </script>
+        <script type="text/javascript">
+            //Function block of helper methods.
 
+            function relayClickToChilds(element) {
+                for (var i in element.childNodes) 
+                    if (typeof element.childNodes[i].click === 'function') 
+                        element.childNodes[i].click();
+                    }
+        </script>
+        <style>
+            body {
+                font-family: "courier";
+            }
+            .fullscreen {
+                height: 100%;
+                margin: 0px;
+                min-height: 100%;
+                width: 100%;
+            }
+            #header {
+                float: left;
+                width: 100%;
+            }
+            #headerBox {
+                background: #cde1ff;
+                border-radius: 0.5em;
+                margin: 0px auto 0px auto;
+                text-align: center;
+                width: 50%;
+            }
+            #content {
+                height: 100%;
+            }
+            #stimuliTable {
+                width: 100%;
+            }
+            img {
+                height: 2em;
+                width: 2em;
+            }
+            table {
+                border-collapse: 
+                collapse;
+                border-spacing: 0px;
+            }
+            td,
+            th {
+                text-align: center;
+            }
+            tr td {
+                border-top-color: #999;
+                border-top-style: solid;
+                border-top-width: 1px;
+            }
+            td:first-child {
+                font-weight: bold;
+            }
+            col:nth-child(even) {
+                background: #cde1ff;
+            }
 
-	function onStimuliError(reason) {
-	    console.log("Stimuli playback error: " + reason);
-	    onStimuliEnded();
-	}
-    </script>
-    <script type="text/javascript">
-	//Function block of helper methods.
-
-	function relayClickToChilds(element) {    
-	    for (var i in element.childNodes)        
-		if (typeof element.childNodes[i].click === 'function')
-		    element.childNodes[i].click();
-	}
-    </script>
-
-    <style>
-    body {
-    font-family: "courier";
-    }
-    
-.fullscreen {
-    height: 100%;
-    width:100%;
-    min-height: 100%;
-    margin: 0;
-}
-
-#header {
-    float:left;
-    width:100%;
-}
-
-#headerBox {
-    width: 50%;
-    margin:0 auto 0 auto;
-    
-    text-align:center;
-    
-    background:#CDE1FF;
-
-    border-radius:0.5em;
-}
-#content {
-    height: 100%;
-}
-
-#stimuliTable {
-    width:100%;
-}
-        
-        img {
-            height: 2em;
-            width: 2em;
-        }
-
-    table {
-        border-collapse: 
-        collapse; border-spacing: 0; 
-    }
-
-        td, th { text-align:center; }
-    
-    tr td {
- border-top-width: 1px;
- border-top-style: solid;
- border-top-color: #999999;
-}
-        td:first-child {
-            font-weight:bold;
-        }
-        
-        col:nth-child(even) {
-            background:#CDE1FF;
-        }
-     
-/* Dynamic styles */
-        .playing {
-
-        }
-        
-        .progressBar {
-            width : 50%;
-            margin:0 auto 0 auto;
-        }
-    </style>
-</head>
-<body>
-   <div class="fullscreen">
-    <div id="header">
-    <div id="headerBox">
-        Qualit&auml;t von Telefonaten: Wie <i>klingen</i> St&ouml;rungen bei Telefonaten?
-    </div>
-    <div style="height:.5em;">
-    </div>
-    </div>
-    
-    <div id="content">
-            <table id="stimuliTable">
-                <col></col><col></col><col></col><col></col><col></col>
-                <tr>
-                    <th></th>
-                    <th>Codec 1</th>
-                    <th>Codec 2</th>
-                    <th>Codec 3</th>
-                    <th>Codec 4</th>
-                </tr>
-                <tr>
-                    <td>Speech</td>
-                    <td>
-                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio1.wav" />
-                    </td>
-                    <td>
-                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
-                    </td>
-                    <td>
-                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
-                    </td>
-                    <td>
-                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
-                    </td>
-                </tr>
-                                <tr>
-                    <td>Speech</td>
-                    <td>
-                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio1.wav" />
-                    </td>
-                    <td>
-                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
-                    </td>
-                    <td>
-                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
-                    </td>
-                    <td>
-                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>Music</td>
-                    <td>
-                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio1.wav" />
-                    </td>
-                    <td>
-                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
-                    </td>
-                    <td>
-                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
-                    </td>
-                    <td>
-                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
-                    </td>
-                </tr>
-            </table>
-        <div style="text-align:center">
-            <progress id="progressBarWaiting" class="progressBar"></progress> <!-- Replace animation -->
-            <progress id="progressBarPlaying" class="progressBar" hidden="hidden"></progress>
+            /* Dynamic styles */
+            .playing {}
+            .progressBar {
+                margin: 0px auto 0px auto;
+                width: 50%;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="fullscreen">
+            <div id="header">
+                <div id="headerBox">
+                    Qualit&auml;t von Telefonaten: Wie
+                    <i>klingen</i>
+                    St&ouml;rungen bei Telefonaten?
+                </div>
+                <div style="height:.5em;"></div>
+            </div>
+            <div id="content">
+                <table id="stimuliTable">
+                    <col><col><col><col><col>
+                    <tr>
+                        <th></th>
+                        <th>Codec 1</th>
+                        <th>Codec 2</th>
+                        <th>Codec 3</th>
+                        <th>Codec 4</th>
+                    </tr>
+                    <tr>
+                        <td>Speech</td>
+                        <td>
+                            <img alt="audio/audio1.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                        </td>
+                        <td>
+                            <img alt="audio/audio2.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                        </td>
+                        <td>
+                            <img alt="audio/audio2.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                        </td>
+                        <td>
+                            <img alt="audio/audio2.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Speech</td>
+                        <td>
+                            <img alt="audio/audio1.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                        </td>
+                        <td>
+                            <img alt="audio/audio2.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                        </td>
+                        <td>
+                            <img alt="audio/audio2.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                        </td>
+                        <td>
+                            <img alt="audio/audio2.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Music</td>
+                        <td>
+                            <img alt="audio/audio1.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                        </td>
+                        <td>
+                            <img alt="audio/audio2.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                        </td>
+                        <td>
+                            <img alt="audio/audio2.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                        </td>
+                        <td>
+                            <img alt="audio/audio2.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                        </td>
+                    </tr>
+                </table>
+                <div style="text-align:center">
+                    <progress class="progressBar" id="progressBarWaiting"></progress>
+                <!-- Replace animation -->
+                <progress class="progressBar" hidden="hidden" id="progressBarPlaying"></progress>
         </div>
     </div>
-    </div>
-    <!-- invisible audio player -->
-    <audio id="audio" onplaying="onStimuliPlaying(this)" ontimeupdate="onStimuliTimeUpdate(this)" onstalling="onStimuliStalling(this)" onended="onStimuliEnded(this)" onerror="onStimuliError(this)"></audio>
+</div>
+<!-- invisible audio player -->
+<audio id="audio" onended="onStimuliEnded(this)" onerror="onStimuliError(this)" onplaying="onStimuliPlaying(this)" onstalling="onStimuliStalling(this)" ontimeupdate="onStimuliTimeUpdate(this)"></audio>
 </body>
 </html>
