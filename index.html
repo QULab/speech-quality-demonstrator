@@ -1,10 +1,8 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>Speech quality demonstrator</title>
-    <script src="http://code.jquery.com/jquery-2.0.3.js"></script>
-
-    <script type="text/javascript">
-    </script>
+    <script src="jquery-2.0.3.js"></script>
 
     <script type="text/javascript">
 
@@ -18,7 +16,7 @@
 
         /*
         Play the current selected sample.
-        Element must contain "alt" and nextElementSibling is used as description.
+        Element must contain "alt", which is the source.
         */
         var lastElement = null;
         function playStimuli(element) {
@@ -30,17 +28,13 @@
             if (!audio.paused) {
                 audio.pause();
 		        if (lastElement === element) {
-		            $('#descriptionPane')[0].innerHTML = "";
 		            return;
 		        }
             }
 
             lastElement = element;
-            lastElement.parentNode.className = "active";
+            lastElement.parentNode.className = "playing";
             lastElement.src = "images/speaker_playing.gif";
-
-            //Set content to description pane
-            $('#descriptionPane')[0].innerHTML = element.nextElementSibling.innerHTML;
 
             audio.src = audioFile;
             audio.play();
@@ -95,45 +89,76 @@
     </script>
 
     <style>
+    body {
+    font-family: "courier";
+    }
+    
+.fullscreen {
+    height: 100%;
+    width:100%;
+    min-height: 100%;
+    margin: 0;
+}
+
+#header {
+    float:left;
+    width:100%;
+}
+
+#headerBox {
+    width: 50%;
+    margin:0 auto 0 auto;
+    
+    text-align:center;
+    
+/*background:linear-gradient(to right, #82B4FF, #3333CC);*/
+    background:#CDE1FF;
+
+    border-radius:0.5em;
+}
+#content {
+    height: 100%;
+}
+
+#stimuliTable {
+    width:100%;
+}
+        
         img {
-            height: 3em;
-            width: 3em;
+            height: 2em;
+            width: 2em;
         }
 
-        .mainPane {
-            height: 90%;
-            width: 100%;
-            background-color: #ffd800;
-        }
+    table {
+    border-collapse: 
+collapse; border-spacing: 0; 
+}
 
-            .mainPane .left {
-                float: left;
-                width: 80%;
-                height: 100%;
-                background-color: gray;
-            }
-
-            .mainPane .right {
-                float: right;
-                width: 20%;
-                height: 100%;
-                background-color: lightgrey;
-            }
-
-            .mainPane .left .table {
-                width: 100%;
-                background-color: aqua;
-                float: left;
-            }
-
-        table, th, td {
-            border: 1px solid black;
-        }
-
-        .selected {
-            background-color: blue;
+        td, th {
+            text-align:center;
         }
         
+        th {
+            background:red;
+        }
+
+/*
+        progress:not([value]){
+            width:10%;
+            background-color:#eee;
+        }
+
+        progress:not([value])::-webkit-progress-bar{
+            width:10%;
+            background-color:red;
+        }
+*/
+        progressBar:(not[value]) {
+            appearance:none;
+            
+        }      
+     
+/* Dynamic styles */
         .playing {
             background-color: red;
         }
@@ -144,11 +169,17 @@
     </style>
 </head>
 <body>
-    <h1>Speech Quality Demonstrator</h1>
-    <audio id="audio" onplaying="onStimuliPlaying(this)" ontimeupdate="onStimuliTimeUpdate(this)" onstalling="onStimuliStalling(this)" onended="onStimuliEnded(this)" onerror="onStimuliError(this)"></audio>
-    <div class="mainPane">
-        <div class="left">
-            <table class="table">
+   <div class="fullscreen">
+    <div id="header">
+    <div id="headerBox">
+        Qualit&auml;t von Telefonaten: Wie <i>klingen</i> St&ouml;rungen bei Telefonaten?
+    </div>
+    <div style="height:.5em;">
+    </div>
+    </div>
+    
+    <div id="content">
+            <table id="stimuliTable">
                 <tr>
                     <th>Stimuli</th>
                     <th>Codec 1</th>
@@ -159,61 +190,41 @@
                 <tr>
                     <td>Speech</td>
                     <td>
-                        <img src="images/speaker.png" onclick="playStimuli(this)" ondblClick="" alt="audio/audio1.wav" />
-                        <div hidden="hidden">
-		                    Description speech 1
-                        </div>
+                        <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio1.wav" />
                     </td>
                     <td>
                         <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
-                        <div hidden="hidden">
-                            Description speech 2
-                        </div>
                     </td>
                     <td>
                         <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
-                        <div hidden="hidden">
-                            Description speech 3
-                        </div>
                     </td>
                     <td>
                         <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
-                        <div hidden="hidden">
-                        </div>
                     </td>
                 </tr>
                 <tr>
                     <td>Music</td>
                     <td>
                         <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio1.wav" />
-                        <div hidden="hidden">
-                        </div>
                     </td>
                     <td>
                         <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
-                        <div hidden="hidden">
-                        </div>
                     </td>
                     <td>
                         <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
-                        <div hidden="hidden">
-                        </div>
                     </td>
                     <td>
                         <img src="images/speaker.png" onclick="playStimuli(this)" alt="audio/audio2.wav" />
-                        <div hidden="hidden">
-                        </div>
                     </td>
                 </tr>
             </table>
-        </div>
-        <div class="right">
-            <div id="descriptionPane"></div>
-        </div>
-        <div>
+        <div style="bottom:0px;">
             <progress id="progressBarWaiting" class="progressBar"></progress>
             <progress id="progressBarPlaying" class="progressBar" hidden="hidden"></progress>
         </div>
     </div>
+    </div>
+    <!-- invisible audio player -->
+    <audio id="audio" onplaying="onStimuliPlaying(this)" ontimeupdate="onStimuliTimeUpdate(this)" onstalling="onStimuliStalling(this)" onended="onStimuliEnded(this)" onerror="onStimuliError(this)"></audio>
 </body>
 </html>
