@@ -1,26 +1,42 @@
-all : audio1-gsm.wav audio1-lpc.wav audio1-amr-nb.wav
+all : audio1-lpc.wav audio1-g722.wav audio1-enc192k-mp3.wav audio1-echo.wav audio1-whitenoise.wav
 
-%-lpc.wav: %.wav
-	sox $< $@
-%-lpc: %.wav
-	sox $< $@
+#AMR-wb
+#AMR-nb
+#opus: opus-tools
 
-%-gsm.wav: %.gsm
-	sox $< $@
-%.gsm: %.wav
-	sox $< $@
+##Codecs
+%-gsm-full-rate.wav: %.wav
+	sox --encoding=gsm-full-rate $< $@
 
-%-g722.wav: %.g722 #Not working; use asterisk?
-	sox $< $@
-%.g722: %.wav
-	sox $< $@
+%-g711.wav: %.wav
+	sox --encoding=a-law $< $@
 
-%-amr-nb.wav: %.amr-nb
+%-lpc.wav: %.lpc
 	sox $< $@
-%.amr-nb: %.wav
+%.lpc : %.wav
 	sox $< $@
 
-%-amr-wb.wav: %.amr-wb #Needs to be compiled into SOX.
+%-enc192k-mp3.wav : %-enc192k.mp3
 	sox $< $@
-%.amr-wb: %.wav
-	sox $< $@
+
+%-enc192k.mp3 : %.wav
+	sox $< -C 192 $@
+
+%-g722.wav : %.g722
+	avconv -i $< $@
+
+%.g722 : %-sample16k.wav
+	avconv -i $< $@
+
+
+##Sampling
+%-sample16k.wav : %.wav
+	sox $< -r 16000 $@
+
+##Noise
+%-whitenoise.wav : %.wav
+	sox $< -p synth whitenoise vol 0.02 | sox -m $< - $@
+
+##Echo 
+%-echo.wav : %.wav
+	sox $< $@ echo .5 .5 100 .5
