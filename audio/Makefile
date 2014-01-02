@@ -4,6 +4,8 @@ all : audio1-lpc.wav audio1-g722.wav audio1-enc192k-mp3.wav audio1-echo.wav audi
 #AMR-nb
 #opus: opus-tools
 
+ITUSTL = stl2009/binUnix/
+
 ##Codecs
 %-gsm-full-rate.wav: %.wav
 	sox --encoding=gsm-full-rate $< $@
@@ -37,6 +39,18 @@ all : audio1-lpc.wav audio1-g722.wav audio1-enc192k-mp3.wav audio1-echo.wav audi
 %-whitenoise.wav : %.wav
 	sox $< -p synth whitenoise vol 0.02 | sox -m $< - $@
 
+%.g722.raw : %.g722.g192
+	$(ITUSTL)/decg722 $< $@
+
+%.g722.g192 : %.raw
+	$(ITUSTL)/encg722 $< $@
+
 ##Echo 
 %-echo.wav : %.wav
 	sox $< $@ echo .5 .5 100 .5
+
+#Conversion: wave to raw (used by G.722 encoder)
+%.raw : %.wav
+	sox $< -r 16000 -e signed -b 16 -c 1 $@
+%.raw.wav : %.raw
+	sox -r 16000 -e signed -b 16 -c 1 $< $@

@@ -1,0 +1,3 @@
+[submodule "audio/stl2009"]
+	path = audio/stl2009
+	url = https://github.com/dennisguse/stl2009.git
