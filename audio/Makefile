@@ -1,4 +1,10 @@
-all : audio1-lpc.wav audio1-g722.wav audio1-enc192k-mp3.wav audio1-echo.wav audio1-whitenoise.wav
+all : codecs effects
+
+codecs: audio1.g722.raw.wav \
+audio1-lpc.wav \
+audio1-enc192k-mp3.wav
+
+effects: audio1.echo.wav audio1.whitenoise.wav
 
 #AMR-wb
 #AMR-nb
@@ -7,13 +13,13 @@ all : audio1-lpc.wav audio1-g722.wav audio1-enc192k-mp3.wav audio1-echo.wav audi
 ITUSTL = stl2009/binUnix/
 
 ##Codecs
-%-gsm-full-rate.wav: %.wav
+%.gsm-full-rate.wav: %.wav
 	sox --encoding=gsm-full-rate $< $@
 
-%-g711.wav: %.wav
+%.g711.wav: %.wav
 	sox --encoding=a-law $< $@
 
-%-lpc.wav: %.lpc
+%.lpc.wav: %.lpc
 	sox $< $@
 %.lpc : %.wav
 	sox $< $@
@@ -24,33 +30,34 @@ ITUSTL = stl2009/binUnix/
 %-enc192k.mp3 : %.wav
 	sox $< -C 192 $@
 
-%-g722.wav : %.g722
+#G.722 using avconv
+%.g722.wav : %.g722
 	avconv -i $< $@
 
 %.g722 : %-sample16k.wav
 	avconv -i $< $@
 
-
-##Sampling
-%-sample16k.wav : %.wav
-	sox $< -r 16000 $@
-
-##Noise
-%-whitenoise.wav : %.wav
-	sox $< -p synth whitenoise vol 0.02 | sox -m $< - $@
-
+#G.722 using ITU-T STL (2006)
 %.g722.raw : %.g722.g192
 	$(ITUSTL)/decg722 $< $@
 
 %.g722.g192 : %.raw
 	$(ITUSTL)/encg722 $< $@
 
+##Sampling
+%.sample16k.wav : %.wav
+	sox $< -r 16k $@
+
+##Noise
+%.whitenoise.wav : %.wav
+	sox $< -p synth whitenoise vol 0.02 | sox -m $< - $@
+
 ##Echo 
-%-echo.wav : %.wav
+%.echo.wav : %.wav
 	sox $< $@ echo .5 .5 100 .5
 
-#Conversion: wave to raw (used by G.722 encoder)
+#Conversion: wave to raw (used by G.722 encoder): 16k signed linear
 %.raw : %.wav
-	sox $< -r 16000 -e signed -b 16 -c 1 $@
+	sox $< -r 16k -e signed -b 16 -c 1 $@
 %.raw.wav : %.raw
-	sox -r 16000 -e signed -b 16 -c 1 $< $@
+	sox -r 16k -e signed -b 16 -c 1 $< $@
