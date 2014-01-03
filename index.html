@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Speech quality demonstrator</title>
+    <head lang="de">
         <script src="jquery-2.0.3.js"></script>
         <script type="text/javascript">
             /* Cycle:
@@ -19,7 +18,7 @@
             var lastElement = null;
             function playStimuli(element) {
                 console.log("playStimuli(): " + element.alt);
-                var audioElement = document.getElementById('audio'); //$('#audio')[0]
+                var audioElement = $('#audio')[0];
                 var audioFile = element.alt;
 
                 onStimuliEnded();
@@ -83,6 +82,32 @@
                     if (typeof element.childNodes[i].click === 'function') 
                         element.childNodes[i].click();
                     }
+        </script>
+        <script type="text/javascript">
+                function switchLanguageDE() {
+                        switchLanguage("de");
+                }
+                function switchLanguageEN() {
+                        switchLanguage("en");
+                }
+                
+                var languageList = ["de", "en"];
+                function switchLanguage(lang) {
+                        if ($.inArray(lang, languageList) == -1) {
+                                console.log("Switching language to " + lang + " doesn't work. Language code unknown.");
+                                return;
+                        }
+                        console.log("Switching language to " + lang);
+
+                        var queryUnhide = '[lang="' + lang + '"]';
+
+                        languageList.map(function(lang) {
+                                console.log($('[lang="' + lang + '"'));
+                                $('[lang="' + lang + '"').attr("hidden", "hidden");
+                                });
+
+                        $(queryUnhide).removeAttr("hidden");
+                }
         </script>
         <style>
             body {
@@ -170,6 +195,9 @@
                     100% {left:10%;};
                 }
         </style>
+        <title>
+                Speech quality demonstrator
+        </title>
     </head>
     <body>
         <div class="fullscreen">
@@ -186,13 +214,16 @@
                     <col><col><col><col><col>
                     <tr>
                         <th></th>
-                        <th>Codec 1</th>
-                        <th>Codec 2</th>
-                        <th>Codec 3</th>
-                        <th>Codec 4</th>
+                        <th>LPC</th>
+                        <th>GSM</th>
+                        <th>G.722</th>
+                        <th></th>
                     </tr>
                     <tr>
-                        <td>Speech</td>
+                        <td>
+				<div lang="de">Sprache</div>
+				<div lang="en" hidden="hidden">Speech</div>
+			</td>
                         <td>
                             <img alt="audio/audio1.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
                         </td>
@@ -207,7 +238,10 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Speech</td>
+                        <td>
+				<div lang="de">Sprache</div>
+				<div lang="en" hidden="hidden">Speech</div>
+			</td>
                         <td>
                             <img alt="audio/audio1.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
                         </td>
@@ -222,7 +256,10 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Music</td>
+                        <td>
+				<div lang="de">Musik</div>
+				<div lang="en" hidden="hidden">Music</div>
+			</td>
                         <td>
                             <img alt="audio/audio1.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
                         </td>
@@ -238,7 +275,6 @@
                     </tr>
                 </table>
                 <div style="text-align:center;width:100%;margin: 0 auto 0 auto;">
-<!--                    <progress id="progressBarWaiting" class="progressBar"></progress>             -->
                     <div style="text-align:center;width:20em;margin: 0 auto 0 auto;">
                         <div id="progressBarWaiting" class="kittLED">
                             <div class="kitt-left"></div>
@@ -250,6 +286,10 @@
                 </div>
         </div>
     </div>
+    <div>
+        <div onclick="switchLanguageEN()"">Englisch</div>
+        <div onclick="switchLanguageDE()">Deutsch</div>
+    
     <!-- invisible audio player -->
     <audio id="audio" onended="onStimuliEnded(this)" onerror="onStimuliError(this)" onplaying="onStimuliPlaying(this)" onstalling="onStimuliStalling(this)" ontimeupdate="onStimuliTimeUpdate(this)"></audio>
 </body>
