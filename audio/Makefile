@@ -44,6 +44,13 @@ ITUSTL = stl2009/binUnix/
 %.g722.g192 : %.raw
 	$(ITUSTL)/encg722 $< $@
 
+%.g722.loss.raw : %.g722.loss.g192
+	$(ITUSTL)/decg722 $< $@
+
+#Packet-loss for G.192 bitstreams using ITU-T STL (2006)
+%.loss.g192 : %.g192
+	$(ITUSTL)/eid-xor -fer -ep byte $< errorpattern $@
+
 ##Sampling
 %.sample16k.wav : %.wav
 	sox $< -r 16k $@
