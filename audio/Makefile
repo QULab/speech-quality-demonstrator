@@ -1,10 +1,21 @@
-all : codecs effects
+#Dennis Guse, 2014
 
-codecs: audio1.g722.raw.wav \
+codecs = audio1.g722.raw.wav \
 audio1-lpc.wav \
 audio1-enc192k-mp3.wav
 
-effects: audio1.echo.wav audio1.whitenoise.wav
+effects = audio1.echo.wav audio1.whitenoise.wav
+
+packet-loss = audio1.g722.loss.raw.wav
+
+
+
+all : $(codecs) $(effects) $(packet-loss)
+
+clean :
+	rm -f $(codecs)
+	rm -f $(effects)
+	rm -f $(packet-loss)
 
 #AMR-wb
 #AMR-nb
