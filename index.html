@@ -30,7 +30,7 @@
                 audioPlayer.addEventListener("error", function() {onStimuliError()});
 
                 element.id = "playing";
-                element.src = "images/speaker_playing.gif";
+                element.src = "graphics/speaker_playing.svg";
 
                 audioPlayer.play();
                 $('#progressBarWaiting')[0].hidden = "hidden";
@@ -68,7 +68,7 @@
                 if (element === undefined) return;
    
                 element.removeAttribute("id");
-                element.src                    = "images/speaker.png";
+                element.src                    = "graphics/speaker.svg";
                 $('#progressBarWaiting')[0].hidden = "";
                 $('#progressBarPlaying')[0].hidden = "hidden";
                 $('#progressBarPlaying')[0].value  = 0.01;
@@ -120,6 +120,7 @@
         <style>
             body {
                 font-family: "courier";
+                            word-break: break-all;
             }
             .fullscreen {
                 height: 100%;
@@ -142,8 +143,7 @@
                 height: 100%;
             }
             #stimuliTable {
-                border-collapse: 
-                collapse;
+                border-collapse: collapse;
                 border-spacing: 0px;
 
                 width:100%;
@@ -152,12 +152,10 @@
                 height: 2em;
                 width: 2em;
             }
-            td,
-            th {
+            td, th {
                 text-align: center;
-                width:1000px;
             }
-            tr td th {
+            tr td {
                 border-top-color: #999;
                 border-top-style: solid;
                 border-top-width: 1px;
@@ -182,7 +180,7 @@
         /*Omage to K.I.T.T.*/
             .kittLED {
                 position:relative;
-                width:3em;
+                width:5em;
                 height:0.7em;
 
                 -webkit-animation:KITT 3s infinite; /*Safari and Chrome*/
@@ -192,14 +190,14 @@
                     width:50%;
                     height:100%;
                     float:right;
-                    background-image: -webkit-linear-gradient(right, #FFFFFF 0%, #FF0000 100%);
+                    background-image: -webkit-linear-gradient(right, #FFFFFF 0%, #FF0000 50%);
                 }
 
                 .kitt-right {
                     width:50%;
                     height:100%;
                     float:right;
-                    background-image: -webkit-linear-gradient(left, #FFFFFF 0%, #FF0000 100%);
+                    background-image: -webkit-linear-gradient(left, #FFFFFF 0%, #FF0000 50%);
                 }
 
                 @-webkit-keyframes KITT /*Safari and Chrome*/ {
@@ -236,8 +234,8 @@
                         <th>Echo</th>
                         <th>Packetverlust: 10</th>
                         <th>Packetverlust: 50</th>
-                        <th>Packetverlust: 10 (mit Entstörung)</th>
-                        <th>Packetverlust: 50 (mit Entstörung)</th>
+                        <th>Packetverlust: 10 (mit Entst&ouml;rung)</th>
+                        <th>Packetverlust: 50 (mit Entst&ouml;rung)</th>
 
                     </tr>
                     <tr>
@@ -245,55 +243,54 @@
             				<div>Sprache</div>
             			</td>
                         <td>
-                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
                             <audio src="audio/de-speech.wav" />
                         </td>
                         <td>
-                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
                             <audio src="audio/de-speech.lpc.wav" />
                         </td>
                         <td>
-                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
                             <audio src="audio/de-speech.gsm-full-rate.wav" />
                         </td>
                         <td>
-                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
                             <audio src="audio/de-speech.g722plc0.raw.wav" />
                         </td>
                         <td>
-                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
                             <audio src="audio/de-speech-enc192k.mp3" />
                         </td>
                         <td>
-                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
                             <audio src="audio/de-speech.whitenoise.wav" />
                         </td>
                         <td>
-                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
                             <audio src="audio/de-speech.echo.wav" />
                         </td>
                         <td>
-                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
                             <audio src="audio/de-speech.plr10.g722plc0.raw.wav" />
                         </td>
                         <td>
-                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
                             <audio src="audio/de-speech.plr50.g722plc0.raw.wav" />
                         </td>
                         <td>
-                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
                             <audio src="audio/de-speech.plr10.g722plc3.raw.wav" />
                         </td>
                         <td>
-                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
                             <audio src="audio/de-speech.plr50.g722plc3.raw.wav" />
                         </td>
                     </tr>
                 </table>
         </div>
     </div>
-    <div style="position:absolute;bottom:5px;width:90%;text-align:center;">
-        <div style="text-align:center;width:100%;margin: 0 auto 0 auto;">
+        <div style="position:absolute;bottom:5px;text-align:center;width:95%;margin: 0 auto 0 auto;">
             <div style="text-align:center;width:20em;margin: 0 auto 0 auto;">
                 <div id="progressBarWaiting" class="kittLED">
                     <div class="kitt-left"></div>
@@ -302,7 +299,6 @@
             </div>              
             <progress id="progressBarPlaying" style="width:25em;" hidden="hidden"></progress>
         </div>
-    </div>
 <!--    <div>
         <div onclick="switchLanguageEN()"">Englisch</div>
         <div onclick="switchLanguageDE()">Deutsch</div>
