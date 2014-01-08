@@ -1,21 +1,44 @@
 #Dennis Guse, 2014
 
-codecs = audio1.g722.raw.wav \
-audio1-lpc.wav \
-audio1-enc192k-mp3.wav
-
-effects = audio1.echo.wav audio1.whitenoise.wav
-
-packet-loss = audio1.g722.loss.raw.wav
+#Add audio files to build! (without .wav suffix)
+all : audio1
 
 
+codecs = %.g722plc0.raw.wav \
+%.lpc.wav \
+%-enc192k-mp3.wav
 
-all : $(codecs) $(effects) $(packet-loss)
+effects = %.echo.wav %.whitenoise.wav
+
+packet-loss = \
+%.plr02.g722plc0.raw.wav \
+%.plr02.g722plc1.raw.wav \
+%.plr02.g722plc2.raw.wav \
+%.plr02.g722plc3.raw.wav \
+%.plr05.g722plc0.raw.wav \
+%.plr05.g722plc1.raw.wav \
+%.plr05.g722plc2.raw.wav \
+%.plr05.g722plc3.raw.wav \
+%.plr10.g722plc0.raw.wav \
+%.plr10.g722plc1.raw.wav \
+%.plr10.g722plc2.raw.wav \
+%.plr10.g722plc3.raw.wav \
+%.plr20.g722plc0.raw.wav \
+%.plr20.g722plc1.raw.wav \
+%.plr20.g722plc2.raw.wav \
+%.plr20.g722plc3.raw.wav \
+%.plr50.g722plc0.raw.wav \
+%.plr50.g722plc1.raw.wav \
+%.plr50.g722plc2.raw.wav \
+%.plr50.g722plc3.raw.wav
 
 clean :
 	rm -f $(codecs)
 	rm -f $(effects)
 	rm -f $(packet-loss)
+
+% : $(codecs) $(effects) $(packet-loss)
+	echo "Finished $@"
 
 #AMR-wb
 #AMR-nb
@@ -30,10 +53,10 @@ ITUSTL = stl2009/binUnix/
 %.g711.wav: %.wav
 	sox --encoding=a-law $< $@
 
-%.lpc.wav: %.lpc
-	sox $< $@
-%.lpc : %.wav
-	sox $< $@
+%.lpc.wav: %.wav
+	sox $< $*.lpc
+	sox $*.lpc $@
+	rm $*.lpc
 
 %-enc192k-mp3.wav : %-enc192k.mp3
 	sox $< $@
@@ -41,26 +64,33 @@ ITUSTL = stl2009/binUnix/
 %-enc192k.mp3 : %.wav
 	sox $< -C 192 $@
 
-#G.722 using avconv
-%.g722.wav : %.g722
-	avconv -i $< $@
-
-%.g722 : %-sample16k.wav
-	avconv -i $< $@
-
-#G.722 using ITU-T STL (2006)
-%.g722.raw : %.g722.g192
-	$(ITUSTL)/decg722 $< $@
-
+##G.722 using ITU-T STL (2009): Encode
 %.g722.g192 : %.raw
 	$(ITUSTL)/encg722 $< $@
-
-%.g722.loss.raw : %.g722.loss.g192
+##G.722 using ITU-T STL (2009): Decode
+%.g722plc0.raw : %.g722.g192
 	$(ITUSTL)/decg722 $< $@
+%.g722plc1.raw : %.g722.g192
+	$(ITUSTL)/decg722 -plc 1 $< $@
+%.g722plc2.raw : %.g722.g192
+	$(ITUSTL)/decg722 -plc 2 $< $@
+%.g722plc3.raw : %.g722.g192
+	$(ITUSTL)/decg722 -plc 3 $< $@
 
-#Packet-loss for G.192 bitstreams using ITU-T STL (2006)
-%.loss.g192 : %.g192
-	$(ITUSTL)/eid-xor -fer -ep byte $< errorpattern $@
+#Packet-loss for G.192 bitstreams using ITU-T STL (2009)
+%.plr02.g722.g192 : %.g722.g192
+	$(ITUSTL)/eid-xor -ep byte -fer $< plr.02 $@
+%.plr05.g722.g192 : %.g722.g192
+	$(ITUSTL)/eid-xor -ep byte -fer $< plr.05 $@
+%.plr10.g722.g192 : %.g722.g192
+	$(ITUSTL)/eid-xor -ep byte -fer $< plr.10 $@
+%.plr20.g722.g192 : %.g722.g192
+	$(ITUSTL)/eid-xor -ep byte -fer $< plr.20 $@
+%.plr50.g722.g192 : %.g722.g192
+	$(ITUSTL)/eid-xor -ep byte -fer $< plr.50 $@
+
+
+
 
 ##Sampling
 %.sample16k.wav : %.wav
@@ -72,9 +102,13 @@ ITUSTL = stl2009/binUnix/
 
 ##Echo 
 %.echo.wav : %.wav
+	echo $*
 	sox $< $@ echo .5 .5 100 .5
 
-#Conversion: wave to raw (used by G.722 encoder): 16k signed linear
+
+
+
+#Conversion: wave to raw (used by ITU-T STL encoder of G.722 encoder): 16k signed linear
 %.raw : %.wav
 	sox $< -r 16k -e signed -b 16 -c 1 $@
 %.raw.wav : %.raw
