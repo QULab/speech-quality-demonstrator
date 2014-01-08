@@ -15,39 +15,43 @@
              Play the current selected sample.
              Element must contain "alt", which is the source.
              */
-            var lastElement = null;
             function playStimuli(element) {
-                console.log("playStimuli(): " + element.alt);
-                var audioElement = $('#audio')[0];
-                var audioFile = element.alt;
-
+                console.log("playStimuli(): " + element);
+                var audioPlayer = element.nextElementSibling;                
+                var previousElement = $("#playing")[0];
+                
                 onStimuliEnded();
-                if (!audio.paused) {
-                    audio.pause();
-                    if (lastElement === element) {
-                        return;
-                    }
-                }
+                if (element == previousElement) return;
 
-                lastElement                      = element;
-                lastElement.parentNode.className = "playing";
-                lastElement.src                  = "images/speaker_playing.gif";
+                audioPlayer.addEventListener("playing", function() {onStimuliPlaying();});
+                audioPlayer.addEventListener("stalling", function() {onStimuliStalling();});
+                audioPlayer.addEventListener("timeupdate", function() {onStimuliTimeUpdate();});
+                audioPlayer.addEventListener("ended", function() {onStimuliEnded();});
+                audioPlayer.addEventListener("error", function() {onStimuliError()});
 
-                audio.src                        = audioFile;
-                audio.play();
+                element.id = "playing";
+                element.src = "images/speaker_playing.gif";
+
+                audioPlayer.play();
                 $('#progressBarWaiting')[0].hidden = "hidden";
                 $('#progressBarPlaying')[0].hidden = "";
+                $('#progressBarPlaying')[0].value  = 0.01;
             }
 
             function onStimuliPlaying() {
                 console.log("Playing");
             }
 
-            function onStimuliTimeUpdate(audio) {
+            function onStimuliTimeUpdate() {
+                var element = $("#playing")[0];
+                if (element === undefined) return;
+                
+                var audio = element.nextElementSibling;
+                
                 console.log("Time update " + audio.currentTime + " / " + audio.duration);
                 if (!isNaN(audio.duration)) 
                     $('#progressBarPlaying')[0].value = (audio.currentTime / audio.duration);
-                }
+            }
 
             function onStimuliProgress(e) { //How much loaded?
                 console.log("Progress");
@@ -60,13 +64,17 @@
             //Stimuli playback callbacks.
             function onStimuliEnded() {
                 console.log("Stimuli playback finished");
-                if (lastElement != null) {
-                    lastElement.parentNode.className   = "";
-                    lastElement.src                    = "images/speaker.png";
-                    $('#progressBarWaiting')[0].hidden = "";
-                    $('#progressBarPlaying')[0].hidden = "hidden";
-                    $('#progressBarPlaying')[0].value  = 0;
-                }
+                var element = $("#playing")[0];
+                if (element === undefined) return;
+   
+                element.removeAttribute("id");
+                element.src                    = "images/speaker.png";
+                $('#progressBarWaiting')[0].hidden = "";
+                $('#progressBarPlaying')[0].hidden = "hidden";
+                $('#progressBarPlaying')[0].value  = 0.01;
+                var audio = element.nextElementSibling;
+                audio.pause();
+                audio.currentTime = 0;
             }
 
             function onStimuliError(reason) {
@@ -134,31 +142,36 @@
                 height: 100%;
             }
             #stimuliTable {
-                width: 100%;
+                border-collapse: 
+                collapse;
+                border-spacing: 0px;
+
+                width:100%;
             }
             img {
                 height: 2em;
                 width: 2em;
             }
-            table {
-                border-collapse: 
-                collapse;
-                border-spacing: 0px;
-            }
             td,
             th {
                 text-align: center;
+                width:1000px;
             }
-            tr td {
+            tr td th {
                 border-top-color: #999;
                 border-top-style: solid;
                 border-top-width: 1px;
+                width:1000px;
             }
             td:first-child {
                 font-weight: bold;
             }
             col:nth-child(even) {
                 background: #cde1ff;
+            }
+            
+            audio {
+                display: none;
             }
 
             /* Dynamic styles */
@@ -232,39 +245,49 @@
             				<div>Sprache</div>
             			</td>
                         <td>
-                            <img alt="audio/de-speech.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <audio src="audio/de-speech.wav" />
                         </td>
                         <td>
-                            <img alt="audio/de-speech.lpc.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <audio src="audio/de-speech.lpc.wav" />
                         </td>
                         <td>
-                            <img alt="audio/de-speech.gsm-full-rate.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <audio src="audio/de-speech.gsm-full-rate.wav" />
                         </td>
                         <td>
-                            <img alt="audio/de-speech.g722plc0.raw.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <audio src="audio/de-speech.g722plc0.raw.wav" />
                         </td>
                         <td>
-                            <img alt="audio/de-speech-enc192k.mp3" onclick="playStimuli(this)" src="images/speaker.png"/>
+                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <audio src="audio/de-speech-enc192k.mp3" />
                         </td>
                         <td>
-                            <img alt="audio/de-speech.whitenoise.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <audio src="audio/de-speech.whitenoise.wav" />
                         </td>
                         <td>
-                            <img alt="audio/de-speech.echo.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <audio src="audio/de-speech.echo.wav" />
                         </td>
                         <td>
-                            <img alt="audio/de-speech.plr10.g722plc0.raw.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <audio src="audio/de-speech.plr10.g722plc0.raw.wav" />
                         </td>
                         <td>
-                            <img alt="audio/de-speech.plr50.g722plc0.raw.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <audio src="audio/de-speech.plr50.g722plc0.raw.wav" />
                         </td>
                         <td>
-                            <img alt="audio/de-speech.plr10.g722plc3.raw.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
-                        </td>   
+                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <audio src="audio/de-speech.plr10.g722plc3.raw.wav" />
+                        </td>
                         <td>
-                            <img alt="audio/de-speech.plr50.g722plc3.raw.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
-                        </td>   
-
+                            <img onclick="playStimuli(this)" src="images/speaker.png" />
+                            <audio src="audio/de-speech.plr50.g722plc3.raw.wav" />
+                        </td>
                     </tr>
                 </table>
         </div>
@@ -284,8 +307,5 @@
         <div onclick="switchLanguageEN()"">Englisch</div>
         <div onclick="switchLanguageDE()">Deutsch</div>
     </div> -->
-    
-    <!-- invisible audio player -->
-    <audio id="audio" onended="onStimuliEnded(this)" onerror="onStimuliError(this)" onplaying="onStimuliPlaying(this)" onstalling="onStimuliStalling(this)" ontimeupdate="onStimuliTimeUpdate(this)"></audio>
 </body>
 </html>
