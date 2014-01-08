@@ -211,84 +211,79 @@
             </div>
             <div id="content">
                 <table id="stimuliTable">
-                    <col><col><col><col><col>
+                    <col><col><col><col><col><col><col><col><col><col><col><col><col><col><col>
                     <tr>
                         <th></th>
+                        <th>Original</th>
                         <th>LPC</th>
                         <th>GSM</th>
                         <th>G.722</th>
-                        <th></th>
+                        <th>MP3: 192kbit/s</th>
+                        <th>Rauschen</th>
+                        <th>Echo</th>
+                        <th>Packetverlust: 10</th>
+                        <th>Packetverlust: 50</th>
+                        <th>Packetverlust: 10 (mit Entstörung)</th>
+                        <th>Packetverlust: 50 (mit Entstörung)</th>
+
                     </tr>
                     <tr>
                         <td>
-				<div lang="de">Sprache</div>
-				<div lang="en" hidden="hidden">Speech</div>
-			</td>
+            				<div>Sprache</div>
+            			</td>
                         <td>
-                            <img alt="audio/audio1.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                            <img alt="audio/de-speech.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
                         </td>
                         <td>
-                            <img alt="audio/audio2.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                            <img alt="audio/de-speech.lpc.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
                         </td>
                         <td>
-                            <img alt="audio/audio2.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                            <img alt="audio/de-speech.gsm-full-rate.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
                         </td>
                         <td>
-                            <img alt="audio/audio2.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-				<div lang="de">Sprache</div>
-				<div lang="en" hidden="hidden">Speech</div>
-			</td>
-                        <td>
-                            <img alt="audio/audio1.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                            <img alt="audio/de-speech.g722plc0.raw.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
                         </td>
                         <td>
-                            <img alt="audio/audio2.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                            <img alt="audio/de-speech-enc192k.mp3" onclick="playStimuli(this)" src="images/speaker.png"/>
                         </td>
                         <td>
-                            <img alt="audio/audio2.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                            <img alt="audio/de-speech.whitenoise.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
                         </td>
                         <td>
-                            <img alt="audio/audio2.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-				<div lang="de">Musik</div>
-				<div lang="en" hidden="hidden">Music</div>
-			</td>
-                        <td>
-                            <img alt="audio/audio1.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                            <img alt="audio/de-speech.echo.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
                         </td>
                         <td>
-                            <img alt="audio/audio2.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                            <img alt="audio/de-speech.plr10.g722plc0.raw.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
                         </td>
                         <td>
-                            <img alt="audio/audio2.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                            <img alt="audio/de-speech.plr50.g722plc0.raw.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
                         </td>
                         <td>
-                            <img alt="audio/audio2.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
-                        </td>
+                            <img alt="audio/de-speech.plr10.g722plc3.raw.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                        </td>   
+                        <td>
+                            <img alt="audio/de-speech.plr50.g722plc3.raw.wav" onclick="playStimuli(this)" src="images/speaker.png"/>
+                        </td>   
+
                     </tr>
                 </table>
-                <div style="text-align:center;width:100%;margin: 0 auto 0 auto;">
-                    <div style="text-align:center;width:20em;margin: 0 auto 0 auto;">
-                        <div id="progressBarWaiting" class="kittLED">
-                            <div class="kitt-left"></div>
-                            <div class="kitt-right"></div>
-                        </div>
-                    </div>
-                 
-                    <progress id="progressBarPlaying" style="width:25em;" hidden="hidden"></progress>
-                </div>
         </div>
     </div>
-    <div>
+    <div style="position:absolute;bottom:5px;width:90%;text-align:center;">
+        <div style="text-align:center;width:100%;margin: 0 auto 0 auto;">
+            <div style="text-align:center;width:20em;margin: 0 auto 0 auto;">
+                <div id="progressBarWaiting" class="kittLED">
+                    <div class="kitt-left"></div>
+                    <div class="kitt-right"></div>
+                </div>
+            </div>              
+            <progress id="progressBarPlaying" style="width:25em;" hidden="hidden"></progress>
+        </div>
+    </div>
+<!--    <div>
         <div onclick="switchLanguageEN()"">Englisch</div>
         <div onclick="switchLanguageDE()">Deutsch</div>
+    </div> -->
     
     <!-- invisible audio player -->
     <audio id="audio" onended="onStimuliEnded(this)" onerror="onStimuliError(this)" onplaying="onStimuliPlaying(this)" onstalling="onStimuliStalling(this)" ontimeupdate="onStimuliTimeUpdate(this)"></audio>
