@@ -9,3 +9,9 @@ The following degradations are included:
 * packet loss
 * noise
 
+Uses for conversion of audio files:
+* libav
+* sox
+* ITU-T Recommendation G.191 (03/10) [http://www.itu.int/rec/T-REC-G.191-201003-I/en]
+
+and jquery (at the moment 2.0.3) for the webpage.

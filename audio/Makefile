@@ -1,11 +1,14 @@
 #Dennis Guse, 2014
 
 #Add audio files to build! (without .wav suffix)
-all : audio1
+all : de-speech
 
+.SECONDARY:
 
 codecs = %.g722plc0.raw.wav \
+%.gsm-full-rate.wav \
 %.lpc.wav \
+%.gsm-full-rate.wav \
 %-enc192k-mp3.wav
 
 effects = %.echo.wav %.whitenoise.wav
@@ -33,12 +36,13 @@ packet-loss = \
 %.plr50.g722plc3.raw.wav
 
 clean :
+#Doesn't work...
 	rm -f $(codecs)
 	rm -f $(effects)
 	rm -f $(packet-loss)
 
 % : $(codecs) $(effects) $(packet-loss)
-	echo "Finished $@"
+	echo "Finished $@."
 
 #AMR-wb
 #AMR-nb
@@ -48,10 +52,12 @@ ITUSTL = stl2009/binUnix/
 
 ##Codecs
 %.gsm-full-rate.wav: %.wav
-	sox --encoding=gsm-full-rate $< $@
+	sox $< --encoding=gsm-full-rate $@.tmp.gsm 
+	sox $@.tmp.gsm --encoding=signed-integer $@
+	rm $@.tmp.gsm
 
 %.g711.wav: %.wav
-	sox --encoding=a-law $< $@
+	sox $< --encoding=a-law $@
 
 %.lpc.wav: %.wav
 	sox $< $*.lpc

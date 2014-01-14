@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<meta charset="UTF-8">
 <html>
     <head lang="de">
         <script src="jquery-2.0.3.js"></script>
@@ -18,21 +19,25 @@
             function playStimuli(element) {
                 console.log("playStimuli(): " + element);
                 var audioPlayer = element.nextElementSibling;                
-                var previousElement = $("#playing")[0];
-                
+
+                //Stop current playing element (if any).
+                var previousElement = document.getElementById("playing");                
                 onStimuliEnded();
                 if (element == previousElement) return;
 
+                //Attach event listener (are stateless and thus don't need to be removed.
                 audioPlayer.addEventListener("playing", function() {onStimuliPlaying();});
                 audioPlayer.addEventListener("stalling", function() {onStimuliStalling();});
                 audioPlayer.addEventListener("timeupdate", function() {onStimuliTimeUpdate();});
                 audioPlayer.addEventListener("ended", function() {onStimuliEnded();});
                 audioPlayer.addEventListener("error", function() {onStimuliError()});
 
+                //Highlight and play
                 element.id = "playing";
                 element.src = "graphics/speaker_playing.svg";
-
                 audioPlayer.play();
+                
+                //Show progressbar
                 $('#progressBarWaiting')[0].hidden = "hidden";
                 $('#progressBarPlaying')[0].hidden = "";
                 $('#progressBarPlaying')[0].value  = 0.01;
@@ -61,7 +66,7 @@
                 console.log("Stalling");
             }
 
-            //Stimuli playback callbacks.
+            //If running, then stop playback.
             function onStimuliEnded() {
                 console.log("Stimuli playback finished");
                 var element = $("#playing")[0];
@@ -80,6 +85,7 @@
             function onStimuliError(reason) {
                 console.log("Stimuli playback error: " + reason);
                 onStimuliEnded();
+                //TODO Error message or so.....
             }
         </script>
         <script type="text/javascript">
