@@ -1,9 +1,11 @@
 #Dennis Guse, 2014
 
 #Add audio files to build! (without .wav suffix)
-all : de-speech
 
-.SECONDARY:
+
+all: de-speech
+	echo "Finished building all"
+
 
 codecs = %.g722plc0.raw.wav \
 %.gsm-full-rate.wav \
@@ -35,14 +37,18 @@ packet-loss = \
 %.plr50.g722plc2.raw.wav \
 %.plr50.g722plc3.raw.wav
 
-clean :
-#Doesn't work...
-	rm -f $(codecs)
-	rm -f $(effects)
-	rm -f $(packet-loss)
-
 % : $(codecs) $(effects) $(packet-loss)
 	echo "Finished $@."
+
+#Keep all intermediate depencencies
+.SECONDARY:
+
+
+#Cleaning using GIT - not the nicest one....
+#Better would be not setting .SECONDARY: and get all dependencies of .SECONDARY...
+clean:
+	git clean -f
+
 
 #AMR-wb
 #AMR-nb
@@ -52,7 +58,7 @@ ITUSTL = stl2009/binUnix/
 
 ##Codecs
 %.gsm-full-rate.wav: %.wav
-	sox $< --encoding=gsm-full-rate $@.tmp.gsm 
+	sox $< --encoding=gsm-full-rate $@.tmp.gsm
 	sox $@.tmp.gsm --encoding=signed-integer $@
 	rm $@.tmp.gsm
 
