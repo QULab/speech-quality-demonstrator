@@ -1,9 +1,89 @@
-<!DOCTYPE html>
-<meta charset="UTF-8">
+f<!DOCTYPE html>
 <html>
-    <head lang="de">
-        <script src="jquery-2.0.3.js"></script>
-        <script type="text/javascript">
+	<head">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<script src="jquery-2.1.0.min.js"></script>
+		<script src="contentflow_src.js"></script>
+		<style>
+			body {
+				font-family: "Courier";
+				height: 100%;
+				width: 100%;
+				margin: 0px;
+				-webkit-user-select: none;
+				background: -webkit-radial-gradient(left,rgba(226, 226, 226, 1),rgba(241, 241, 241, 1));
+			}
+			#original {
+				position: absolute;
+				background: -webkit-linear-gradient(rgba(41, 128, 185,1.0),rgba(52, 152, 219,1.0),rgba(41, 128, 185,1.0));
+				top: 350px;
+				height: 380px;
+				width: 900px;
+				text-align: center;
+				padding: 0px 510px;
+				z-index:-2;
+			}
+			.balls {
+				text-align: center;
+				position: absolute;
+			}
+			.balls>div,#original>.voice {
+				margin: 0 auto;
+				width: 65px;
+			}
+			#license {
+				position: absolute;
+				top: 950px;
+				right: 0px;
+				z-index:1;
+			}
+			h1 {
+				margin: auto;
+				top: 150px;
+				position: relative;
+				font-size: 32px;
+				font-weight: bold;
+				color: #000000;
+				/*color: #e74c3c;*/
+			}
+			h2 {
+				position: relative;
+				font-size: 16px;
+				font-weight: normal;
+				margin: 0px;
+				top: 7px;
+				color: black;
+			}
+			h3 {
+				text-align: center;
+				background: #e74c3c;
+				font-weight: normal;
+				margin: auto;
+				color: #EEEEEE;
+				height: 98px;
+			}
+			.voice>img {
+				height: 47px;
+				width: 47px;
+				padding: 2px;
+				-webkit-user-drag: none;
+			}
+			.voice>svg {
+				position: absolute;
+				top: -5px;
+				-webkit-transform: translateX(-91%);
+				z-index:-1;
+				height: 62px;
+				width: 62px;
+				box-shadow: inset 0 0 4px black;
+				border-radius: 100%;
+			}
+			.bar {
+				-webkit-transition: stroke-dashoffset .25s linear;
+				stroke-width: 2px;
+			}
+		</style>
+		<script>
             /* Cycle:
              0. Stimuli ended
              1. Loading
@@ -18,44 +98,39 @@
              */
             function playStimuli(element) {
                 console.log("playStimuli(): " + element);
-                var audioPlayer = element.nextElementSibling;                
-
+				
                 //Stop current playing element (if any).
-                var previousElement = document.getElementById("playing");                
+                var previousElement = document.getElementById("playing");
                 onStimuliEnded();
                 if (element == previousElement) return;
-
+                
+				var audioPlayer = element.nextElementSibling;
+				
                 //Attach event listener (are stateless and thus don't need to be removed.
                 audioPlayer.addEventListener("playing", function() {onStimuliPlaying();});
                 audioPlayer.addEventListener("stalling", function() {onStimuliStalling();});
-                audioPlayer.addEventListener("timeupdate", function() {onStimuliTimeUpdate();});
+                audioPlayer.addEventListener("timeupdate", function() {onStimuliTimeUpdate(audioPlayer);});
                 audioPlayer.addEventListener("ended", function() {onStimuliEnded();});
                 audioPlayer.addEventListener("error", function() {onStimuliError()});
 
                 //Highlight and play
                 element.id = "playing";
                 element.src = "graphics/speaker_playing.svg";
+				audioPlayer.src = "audio/" + $(".active")[0].getAttribute('name') + element.parentNode.getAttribute('name') + ".wav";
                 audioPlayer.play();
-                
-                //Show progressbar
-                $('#progressBarWaiting')[0].hidden = "hidden";
-                $('#progressBarPlaying')[0].hidden = "";
-                $('#progressBarPlaying')[0].value  = 0.01;
             }
 
             function onStimuliPlaying() {
                 console.log("Playing");
             }
-
-            function onStimuliTimeUpdate() {
+            
+            function onStimuliTimeUpdate(audio) {
                 var element = $("#playing")[0];
                 if (element === undefined) return;
                 
-                var audio = element.nextElementSibling;
-                
                 console.log("Time update " + audio.currentTime + " / " + audio.duration);
-                if (!isNaN(audio.duration)) 
-                    $('#progressBarPlaying')[0].value = (audio.currentTime / audio.duration);
+                if (!isNaN(audio.duration))
+                	updatePieValue(element , audio.currentTime / audio.duration);
             }
 
             function onStimuliProgress(e) { //How much loaded?
@@ -68,246 +143,235 @@
 
             //If running, then stop playback.
             function onStimuliEnded() {
-                console.log("Stimuli playback finished");
                 var element = $("#playing")[0];
                 if (element === undefined) return;
-   
-                element.removeAttribute("id");
-                element.src                    = "graphics/speaker.svg";
-                $('#progressBarWaiting')[0].hidden = "";
-                $('#progressBarPlaying')[0].hidden = "hidden";
-                $('#progressBarPlaying')[0].value  = 0.01;
+                
+   				console.log("Stimuli playback finished");
+   				element.removeAttribute("id");
+                element.src = "graphics/speaker.svg";
+                
                 var audio = element.nextElementSibling;
+                
                 audio.pause();
                 audio.currentTime = 0;
+                audio.removeAttribute("src");
+                $('.bar').css({ strokeDashoffset: 0})
             }
-
+            
             function onStimuliError(reason) {
                 console.log("Stimuli playback error: " + reason);
                 onStimuliEnded();
                 //TODO Error message or so.....
             }
-        </script>
-        <script type="text/javascript">
-            //Function block of helper methods.
-
-            function relayClickToChilds(element) {
-                for (var i in element.childNodes) 
-                    if (typeof element.childNodes[i].click === 'function') 
-                        element.childNodes[i].click();
-                    }
-        </script>
-        <script type="text/javascript">
-                function switchLanguageDE() {
-                        switchLanguage("de");
-                }
-                function switchLanguageEN() {
-                        switchLanguage("en");
-                }
-                
-                var languageList = ["de", "en"];
-                function switchLanguage(lang) {
-                        if ($.inArray(lang, languageList) == -1) {
-                                console.log("Switching language to " + lang + " doesn't work. Language code unknown.");
-                                return;
-                        }
-                        console.log("Switching language to " + lang);
-
-                        var queryUnhide = '[lang="' + lang + '"]';
-
-                        languageList.map(function(lang) {
-                                console.log($('[lang="' + lang + '"'));
-                                $('[lang="' + lang + '"').attr("hidden", "hidden");
-                                });
-
-                        $(queryUnhide).removeAttr("hidden");
-                }
-        </script>
-        <style>
-            body {
-                font-family: "courier";
-                            word-break: break-all;
+            			
+			//Updates Pie Value with a value from 0 to 1
+			function updatePieValue(element, value) {
+				if (value>0.995) {
+					onStimuliEnded();
+					return;
+				}
+   				var r = $("#progressBar")[0].lastElementChild.getAttribute('r');
+				var pct = value*Math.PI*(r*2);
+				element.parentNode.lastElementChild.lastElementChild.style.strokeDashoffset=pct;
+			}
+			
+            function toggle(element) {
+            		$("#exp")[0].style.display = "block";
+            		$("#comp")[0].style.display = "block";
+            		element.parentNode.style.display = "none";		
             }
-            .fullscreen {
-                height: 100%;
-                margin: 0px;
-                min-height: 100%;
-                width: 100%;
-            }
-            #header {
-                float: left;
-                width: 100%;
-            }
-            #headerBox {
-                background: #cde1ff;
-                border-radius: 0.5em;
-                margin: 0px auto 0px auto;
-                text-align: center;
-                width: 50%;
-            }
-            #content {
-                height: 100%;
-            }
-            #stimuliTable {
-                border-collapse: collapse;
-                border-spacing: 0px;
-
-                width:100%;
-            }
-            img {
-                height: 2em;
-                width: 2em;
-            }
-            td, th {
-                text-align: center;
-            }
-            tr td {
-                border-top-color: #999;
-                border-top-style: solid;
-                border-top-width: 1px;
-                width:1000px;
-            }
-            td:first-child {
-                font-weight: bold;
-            }
-            col:nth-child(even) {
-                background: #cde1ff;
-            }
-            
-            audio {
-                display: none;
-            }
-
-            /* Dynamic styles */
-            .playing {}
-            
-        </style>
-        <style>
-        /*Omage to K.I.T.T.*/
-            .kittLED {
-                position:relative;
-                width:5em;
-                height:0.7em;
-
-                -webkit-animation:KITT 3s infinite; /*Safari and Chrome*/
-            }
-
-                .kitt-left {
-                    width:50%;
-                    height:100%;
-                    float:right;
-                    background-image: -webkit-linear-gradient(right, #FFFFFF 0%, #FF0000 50%);
-                }
-
-                .kitt-right {
-                    width:50%;
-                    height:100%;
-                    float:right;
-                    background-image: -webkit-linear-gradient(left, #FFFFFF 0%, #FF0000 50%);
-                }
-
-                @-webkit-keyframes KITT /*Safari and Chrome*/ {
-                    0%  {left:10%;}
-                    50% {left:90%;}
-                    100% {left:10%;};
-                }
-        </style>
-        <title>
-                Speech quality demonstrator
-        </title>
-    </head>
-    <body>
-        <div class="fullscreen">
-            <div id="header">
-                <div id="headerBox">
-                    Qualit&auml;t von Telefonaten: Wie
-                    <i>klingen</i>
-                    St&ouml;rungen bei Telefonaten?
-                </div>
-                <div style="height:.5em;"></div>
-            </div>
-            <div id="content">
-                <table id="stimuliTable">
-                    <col><col><col><col><col><col><col><col><col><col><col><col><col><col><col>
-                    <tr>
-                        <th></th>
-                        <th>Original</th>
-                        <th>LPC</th>
-                        <th>GSM</th>
-                        <th>G.722</th>
-                        <th>MP3: 192kbit/s</th>
-                        <th>Rauschen</th>
-                        <th>Echo</th>
-                        <th>Packetverlust: 10</th>
-                        <th>Packetverlust: 50</th>
-                        <th>Packetverlust: 10 (mit Entst&ouml;rung)</th>
-                        <th>Packetverlust: 50 (mit Entst&ouml;rung)</th>
-
-                    </tr>
-                    <tr>
-                        <td>
-            				<div>Sprache</div>
-            			</td>
-                        <td>
-                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
-                            <audio src="audio/de-speech.wav" />
-                        </td>
-                        <td>
-                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
-                            <audio src="audio/de-speech.lpc.wav" />
-                        </td>
-                        <td>
-                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
-                            <audio src="audio/de-speech.gsm-full-rate.wav" />
-                        </td>
-                        <td>
-                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
-                            <audio src="audio/de-speech.g722plc0.raw.wav" />
-                        </td>
-                        <td>
-                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
-                            <audio src="audio/de-speech-enc192k.mp3" />
-                        </td>
-                        <td>
-                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
-                            <audio src="audio/de-speech.whitenoise.wav" />
-                        </td>
-                        <td>
-                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
-                            <audio src="audio/de-speech.echo.wav" />
-                        </td>
-                        <td>
-                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
-                            <audio src="audio/de-speech.plr10.g722plc0.raw.wav" />
-                        </td>
-                        <td>
-                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
-                            <audio src="audio/de-speech.plr50.g722plc0.raw.wav" />
-                        </td>
-                        <td>
-                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
-                            <audio src="audio/de-speech.plr10.g722plc3.raw.wav" />
-                        </td>
-                        <td>
-                            <img onclick="playStimuli(this)" src="graphics/speaker.svg" />
-                            <audio src="audio/de-speech.plr50.g722plc3.raw.wav" />
-                        </td>
-                    </tr>
-                </table>
-        </div>
-    </div>
-        <div style="position:absolute;bottom:5px;text-align:center;width:95%;margin: 0 auto 0 auto;">
-            <div style="text-align:center;width:20em;margin: 0 auto 0 auto;">
-                <div id="progressBarWaiting" class="kittLED">
-                    <div class="kitt-left"></div>
-                    <div class="kitt-right"></div>
-                </div>
-            </div>              
-            <progress id="progressBarPlaying" style="width:25em;" hidden="hidden"></progress>
-        </div>
-<!--    <div>
-        <div onclick="switchLanguageEN()"">Englisch</div>
-        <div onclick="switchLanguageDE()">Deutsch</div>
-    </div> -->
-</body>
+			
+			//Coverflow initializes and numbers each item after page loads
+			function load() {
+				var sampleSelector = new ContentFlow(document.getElementById('contentFlow'), {reflectionColor: "#000000"});
+				
+            	for (var i=0;i<$(".voice").size();i++) {
+					var currentProgressBar = $("#progressBar")[0].cloneNode(true);
+					currentProgressBar.removeAttribute('id');
+					currentProgressBar.style.visibility = 'inherit';
+					currentProgressBar.style.stroke = (i==0)?'black':'rgba(41, 128, 185, 1)';
+					//if (i==0) currentProgressBar.firstElementChild.setAttribute('fill','#e74c3c');
+					$("audio")[i].parentNode.insertBefore(currentProgressBar,null);
+				}
+			}
+		</script>
+		<title>
+			Squid - Speech Quality Demonstrator
+		</title>
+	</head>
+	<body onload="load()">
+		<div id="license">
+			<div id="exp" style="display:none;width:180px;">
+				<h3 onclick="toggle(this)" style="font-size:10px">
+				&copy; Implemented by Henrique Orefice and Dennis Guse.<br>
+				Software used: SOX, JQuery, ITU-T STL 2009, ContentFlow by www.jackasylum.eu<br>
+				Audio-Files:<br>
+				* Brad Sucks - Total Breakdown<br>
+				* Totems Preludium<br>
+				</h3>
+			</div>
+			<div id="comp" style="width:35px;">
+				<h3 onclick="toggle(this)" style="font-size:12px">L<br>I<br>C<br>E<br>N<br>S<br>E</h3>
+			</div>
+		</div>
+		<div id="original">
+			<h1 style="position:relative;top:8px;font-size:35px;color:#EEEEEE;">Original</h1>
+			<div id="contentFlow" class="ContentFlow">
+		        <div class="flow">
+		            <div class="item" name="CH_f1_s4">
+		                <img class="content" src="graphics/frau_ch.svg"/>
+		            </div>
+					<div class="item" name="bradSucks-TotalBreakdown">
+		                <img class="content" src="graphics/musik.svg"/>
+		            </div>
+					<div class="item" name="Totems-Preludium">
+		                <img class="content" src="graphics/vinyl.svg"/>
+		            </div>
+		            <div class="item" name="m1s14">
+		                <img class="content" src="graphics/mann_de.svg"/>
+		            </div>
+		            <div class="item" name="f1s05">
+		                <img class="content" src="graphics/frau_de.svg"/>
+		            </div>
+		            <div class="item" name="CH_m1_s2">
+		                <img class="content" src="graphics/mann_ch.svg"/>
+		            </div>
+		        </div>
+		    </div>
+			<div class="voice" style="position:relative;top:32px;" name="">
+				<img onclick="playStimuli(this)" src="graphics/speaker.svg">
+				<audio></audio>
+			</div>
+		</div>
+		<div class="balls" id="echo" style="left:1280px;height:350px;width:640px;">
+			<h1>Echo</h1>
+			<div style="position:relative;top:165px;left:-85px;">
+				<div class="voice" name=".echo-100ms-30decay">
+					<img onclick="playStimuli(this)" src="graphics/speaker.svg">
+					<audio></audio>
+				</div>
+				<h2>100ms</h2>
+			</div>
+			<div style="position:relative;top:90px;left:85px;">
+				<div class="voice" name=".echo-500ms-30decay">
+					<img onclick="playStimuli(this)" src="graphics/speaker.svg">
+					<audio></audio>
+				</div>
+				<h2>500ms</h2>
+			</div>
+		</div>
+		<div class="balls" id="rauschen" style="height:350px;width:640px;">
+			<h1>Rauschen</h1>
+			<div style="position:relative;top:165px;left:-85px;">
+				<div class="voice" name=".whitenoise">
+					<img onclick="playStimuli(this)" src="graphics/speaker.svg">
+					<audio></audio>
+				</div>
+				<h2>Weiß</h2>
+			</div>
+			<div style="position:relative;top:90px;left:85px;">
+				<div class="voice" name=".pinknoise">
+					<img onclick="playStimuli(this)" src="graphics/speaker.svg">
+					<audio></audio>
+				</div>
+				<h2>Pink</h2>
+			</div>
+		</div>
+		<div class="balls" id="frequenzband" style="left:640px;height:350px;width:640px;">
+			<h1>Frequenzband</h1>
+			<div style="position:relative;top:165px;left:-85px;">
+				<div class="voice" name=".wideband">
+					<img onclick="playStimuli(this)" src="graphics/speaker.svg">
+					<audio></audio>
+				</div>
+				<h2>Breitband</h2>
+			</div>
+			<div style="position:relative;top:90px;left:85px;">
+				<div class="voice" name=".narrowband">
+					<img onclick="playStimuli(this)" src="graphics/speaker.svg">
+					<audio></audio>
+				</div>
+				<h2>Schmalband</h2>
+			</div>
+		</div>
+		<div class="balls" id="codecs" style="top:730px;height:350px;width:960px;">
+			<h1>Kodierung</h1>
+			<div style="position:relative;top:32px;left:-65px;">
+				<div class="voice" name=".g711">
+					<img onclick="playStimuli(this)" src="graphics/speaker.svg">
+					<audio></audio>
+				</div>
+				<h2>G711</h2>
+			</div>
+			<div style="position:relative;top:-42px;left:65px;">
+				<div class="voice" name=".g722plc0.raw">
+					<img onclick="playStimuli(this)" src="graphics/speaker.svg">
+					<audio></audio>
+				</div>
+				<h2>G722</h2>
+			</div>
+			<div style="position:relative;top:20px;left:-110px;">
+				<div class="voice" name=".gsm-full-rate">
+					<img onclick="playStimuli(this)" src="graphics/speaker.svg">
+					<audio></audio>
+				</div>
+				<h2>GSM</h2>
+			</div>
+			<div style="position:relative;top:-30px;">
+				<div class="voice" name=".enc192k-mp3">
+					<img onclick="playStimuli(this)" src="graphics/speaker.svg">
+					<audio></audio>
+				</div>
+				<h2>MP3</h2>
+			</div>
+			<div style="position:relative;top:-120px;left:110px;">
+				<div class="voice" name=".lpc">
+					<img onclick="playStimuli(this)" src="graphics/speaker.svg">
+					<audio></audio>
+				</div>
+				<h2>LPC</h2>
+			</div>
+		</div>
+		<div class="balls" id="packets" style="top:730px;left:960px;height:350px;width:960px;">
+			<h1>Netzwerkst&ouml;rung</h1>
+			<div style="position:relative;top:32px;left:-65px;">
+				<div class="voice" name=".plr02.g722plc0.raw">
+					<img onclick="playStimuli(this)" src="graphics/speaker.svg">
+					<audio></audio>
+				</div>
+				<h2>2%</h2>
+			</div>
+			<div style="position:relative;top:-42px;left:65px;">
+				<div class="voice" name=".plr05.g722plc0.raw">
+					<img onclick="playStimuli(this)" src="graphics/speaker.svg">
+					<audio></audio>
+				</div>
+				<h2>5%</h2>
+			</div>
+			<div style="position:relative;top:20px;left:-110px;">
+				<div class="voice" name=".plr10.g722plc0.raw">
+					<img onclick="playStimuli(this)" src="graphics/speaker.svg">
+					<audio></audio>
+				</div>
+				<h2>10%</h2>
+			</div>
+			<div style="position:relative;top:-30px;">
+				<div class="voice" name=".plr20.g722plc0.raw">
+					<img onclick="playStimuli(this)" src="graphics/speaker.svg">
+					<audio></audio>
+				</div>
+				<h2>20%</h2>
+			</div>
+			<div style="position:relative;top:-120px;left:110px;">
+				<div class="voice" name=".plr50.g722plc0.raw">
+					<img onclick="playStimuli(this)" src="graphics/speaker.svg">
+					<audio></audio>
+				</div>
+				<h2>50%</h2>
+			</div>
+		</div>
+	</body>
+	<svg id="progressBar" style="visibility:hidden" width="100" height="100" viewPort="0 0 50 50">
+		<circle class="bar" r="29" cx="31" cy="31" fill="transparent" stroke-dasharray="182.21"></circle>
+	</svg>
 </html>

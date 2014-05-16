@@ -1,0 +1,48 @@
+<svg width="128" height="128" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <linearGradient id="linearGradient17172">
+   <stop stop-color="#ffeed6" offset="0"/>
+   <stop stop-color="#ffcd8b" offset="1"/>
+  </linearGradient>
+  <linearGradient y2="0.699228" y1="1.479334" x2="0.490901" x1="-0.389811" id="linearGradient17191">
+   <stop stop-color="#664314" offset="0"/>
+   <stop stop-color="#a06b08" offset="1"/>
+  </linearGradient>
+  <linearGradient y2="-0.063107" y1="0.932038" x2="0.468683" x1="0.468948" id="linearGradient17195">
+   <stop offset="0"/>
+   <stop stop-color="#747474" offset="1"/>
+  </linearGradient>
+  <linearGradient y2="1.379894" y1="0.400731" x2="0.456186" x1="0.499816" id="linearGradient17199">
+   <stop stop-color="#d49c56" offset="0"/>
+   <stop stop-opacity="0.25806" stop-color="#d49c56" offset="1"/>
+  </linearGradient>
+  <linearGradient y2="-0.067449" y1="1.009028" x2="0.677985" x1="0.563772" id="linearGradient17203">
+   <stop stop-color="#d49c56" offset="0"/>
+   <stop stop-opacity="0" stop-color="#d49c56" offset="1"/>
+  </linearGradient>
+  <linearGradient y2="0.649847" y1="-0.288068" x2="0.777739" x1="-2.176082" id="linearGradient17207">
+   <stop stop-color="#fff" offset="0"/>
+   <stop stop-opacity="0" stop-color="#fff" offset="1"/>
+  </linearGradient>
+  <radialGradient xlink:href="#linearGradient17172" r="15.00893" id="radialGradient17197" gradientUnits="userSpaceOnUse" gradientTransform="matrix(.1038,8.14516e-2,-.21402,.27274,-132.2014,63.74477)" cy="72.64421" cx="-164.86122"/>
+  <radialGradient xlink:href="#linearGradient17172" r="21.60716" id="radialGradient17201" gradientUnits="userSpaceOnUse" gradientTransform="matrix(.7193,-1.71987e-2,3.513213e-2,1.46933,-44.05941,-19.60001)" cy="33.69548" cx="-165.2417"/>
+ </defs>
+ <g>
+  <title>Layer 1</title>
+  <g id="svg_1" transform="matrix(1.14029,0,0,1.14029,257.5128,9.58352)">
+   <path id="svg_2" fill-rule="evenodd" fill="url(#linearGradient17191)" d="m-147.339005,25.70957c1.602478,-11.00087 -4.476364,-25.92403 -21.366562,-26.248131c-21.917358,-0.42056 -25.992828,15.37022 -24.881516,27.158529c1.353485,14.357311 43.432251,18.419941 46.248077,-0.9104l0,0.000002z"/>
+   <path id="svg_3" stroke="#000" fill-rule="evenodd" fill="url(#linearGradient17195)" d="m-222.673721,95.620659c2.449127,-6.762657 3.533524,-19.316353 11.964279,-23.507889l39.107147,-8.367104l40.844269,7.763771c7.187141,2.580177 10.584457,16.564049 14.020485,24.487411c-2.238251,1.606758 -4.167343,3.986412 -6.829041,4.534538l-92.678566,0c-3.00972,-1.116791 -4.534134,-3.124771 -6.428574,-4.910721l0,-0.000008z"/>
+   <path id="svg_4" stroke="url(#linearGradient17199)" fill-rule="evenodd" fill="url(#radialGradient17197)" d="m-183.120148,55.084949c0.208466,5.059479 -0.990753,7.97543 -3.361099,12.263912c9.228943,16.963135 33.150055,8.218834 32.525772,-0.478195l-2.64682,-14.464287l-26.517853,2.67857z"/>
+   <path id="svg_5" stroke="url(#linearGradient17203)" fill-rule="evenodd" fill="url(#radialGradient17201)" d="m-149.379639,27.913441c-0.510376,7.99704 -0.734207,17.748028 -2.525375,25.745068c0,0 -8.144287,7.402943 -12.690048,9.420872s-5.818085,1.744267 -10.101532,-0.063129s-14.205276,-8.85265 -14.205276,-8.85265c-4.264343,-17.290001 -5.72319,-35.412144 13.258255,-45.064239l5.62001,6.674562c2.079391,2.469604 11.20932,6.308987 14.658249,3.016138c2.722092,-2.598911 4.38414,6.93121 5.985718,9.123381l0,-0.00001l0,0.000002l0,0.000002l0,0.000002l0,0.000002z"/>
+   <path id="svg_6" fill-rule="evenodd" fill="url(#linearGradient17207)" d="m-189.889236,29.28438c-0.706802,8.015871 0.464462,15.6733 2.239578,23.851957c4.892365,3.952641 8.6008,9.167301 18.813019,7.08073c3.496658,-0.796867 2.200119,-2.46833 4.20842,-3.477818c-12.072052,3.586628 -14.041351,1.050377 -20.263824,-6.252831l-4.107849,-23.873505l-0.889343,2.671453l0,0.000002l0,0.000002l0,0.000002l0,0.000002l0,0.000002l0,0.000002z"/>
+  </g>
+ </g>
+ <g>
+  <title>Layer 2</title>
+  <g id="deutsch">
+   <rect fill="#000" y="100" x="83" height="4" width="18" id="black_stripe"/>
+   <rect fill="#D00" y="104" x="83" height="4" width="18" id="red_stripe"/>
+   <rect fill="#FFCE00" y="108" x="83" height="4" width="18" id="gold_stripe"/>
+  </g>
+ </g>
+</svg>
